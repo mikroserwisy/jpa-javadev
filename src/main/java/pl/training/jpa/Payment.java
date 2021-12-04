@@ -19,10 +19,11 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Payment {
+public class Payment implements Identifiable<Long> {
 
+    @GeneratedValue
     @Id
-    private String id;
+    private Long id;
     //@Convert(converter = FastMoneyConverter.class)
     private FastMoney value;
     private Instant timestamp;

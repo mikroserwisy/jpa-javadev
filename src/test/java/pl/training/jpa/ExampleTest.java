@@ -1,23 +1,22 @@
 package pl.training.jpa;
 
+import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ExampleTest extends BaseTest {
 
     private final Payment TEST_PAYMENT = Payment.builder()
-            .id(UUID.randomUUID().toString())
             .value(LocalMoney.of(1_000))
             .timestamp(Instant.now())
             .build();
 
     @Test
     void should_connect_to_database() {
-        withTransaction(entityManager -> {});
+        withTransaction(entityManager -> entityManager.unwrap(Session.class));
     }
 
     @Test
