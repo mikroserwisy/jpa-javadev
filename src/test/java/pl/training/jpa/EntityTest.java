@@ -1,7 +1,7 @@
 package pl.training.jpa;
 
 import org.hibernate.Session;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +13,8 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// https://vladmihalcea.com/hibernate-facts-equals-and-hashcode/
-// https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+// https://vladmihalcea.com/hibernate-facts-equals-and-hashcode
+// https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier
 abstract class EntityTest<T extends Identifiable<?>> extends BaseTest {
 
     private final Set<T> entities = new HashSet<>();
@@ -92,6 +92,13 @@ abstract class EntityTest<T extends Identifiable<?>> extends BaseTest {
         entityManager.persist(entity);
         var proxy = entityManager.getReference(entity.getClass(), entity.getId());
         assertTrue(entities.contains(proxy));
+    }
+
+    @AfterEach
+    void afterEach() {
+        transaction.commit();
+        entityManager.close();
+        entityManagerFactory.close();
     }
 
 }

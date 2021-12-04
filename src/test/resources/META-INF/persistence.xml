@@ -3,7 +3,8 @@
     <persistence-unit name="training">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <!--<mapping-file>META-INF/orm.xml</mapping-file>-->
-        <class>pl.training.jpa.Payment</class>
+        <class>pl.training.jpa.PaymentEntity</class>
+        <class>pl.training.jpa.BookEntity</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/training"/>
             <property name="javax.persistence.jdbc.user" value="admin"/>

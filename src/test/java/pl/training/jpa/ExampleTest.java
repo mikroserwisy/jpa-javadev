@@ -1,17 +1,18 @@
 package pl.training.jpa;
 
 import org.hibernate.Session;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ExampleTest extends BaseTest {
 
-    private final Payment TEST_PAYMENT = Payment.builder()
+    private final PaymentEntity TEST_PAYMENTEntity = PaymentEntity.builder()
             .value(LocalMoney.of(1_000))
-            .timestamp(Instant.now())
+            .timestamp(new Date())
             .build();
 
     @Test
@@ -21,11 +22,16 @@ class ExampleTest extends BaseTest {
 
     @Test
     void should_persist_payment() {
-        withTransaction(entityManager -> entityManager.persist(TEST_PAYMENT));
+        withTransaction(entityManager -> entityManager.persist(TEST_PAYMENTEntity));
         withTransaction(entityManager -> {
-            var payment = entityManager.find(Payment.class, TEST_PAYMENT.getId());
+            var payment = entityManager.find(PaymentEntity.class, TEST_PAYMENTEntity.getId());
             assertNotNull(payment);
         });
+    }
+
+    @AfterEach
+    void afterEach() {
+        entityManagerFactory.close();
     }
 
 }

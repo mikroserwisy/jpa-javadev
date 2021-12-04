@@ -8,37 +8,37 @@ import javax.persistence.*;
 public class PaymentListener {
 
     @PrePersist
-    public void prePersist(Payment payment) {
+    public void prePersist(PaymentEntity paymentEntity) {
         log.info("prePersist");
     }
 
     @PostPersist
-    public void postPersist(Payment payment) {
+    public void postPersist(PaymentEntity paymentEntity) {
         log.info("postPersist");
     }
 
     @PreRemove
-    public void preRemove(Payment payment) {
+    public void preRemove(PaymentEntity paymentEntity) {
         log.info("preRemove");
     }
 
     @PostRemove
-    public void postRemove(Payment payment) {
+    public void postRemove(PaymentEntity paymentEntity) {
         log.info("postRemove");
     }
 
     @PreUpdate
-    public void preUpdate(Payment payment) {
+    public void preUpdate(PaymentEntity paymentEntity) {
         log.info("preUpdate");
     }
 
     @PostUpdate
-    public void postUpdate(Payment payment) {
+    public void postUpdate(PaymentEntity paymentEntity) {
         log.info("postUpdate");
     }
 
     @PostLoad
-    public void postLoad(Payment payment) {
+    public void postLoad(PaymentEntity paymentEntity) {
         log.info("postLoad");
     }
 

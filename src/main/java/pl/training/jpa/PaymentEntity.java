@@ -1,14 +1,14 @@
 package pl.training.jpa;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.java.Log;
 import org.javamoney.moneta.FastMoney;
 
-import javax.persistence.*;
-import java.time.Instant;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.Date;
+import java.util.Objects;
 
 //@ExcludeDefaultListeners
 //@ExcludeSuperclassListeners
@@ -16,17 +16,19 @@ import java.time.Instant;
 @Entity
 @Log
 @Builder
-@Data
+//@EqualsAndHashCode(exclude = "id")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Payment implements Identifiable<Long> {
+public class PaymentEntity implements Identifiable<Long> {
 
     @GeneratedValue
     @Id
     private Long id;
     //@Convert(converter = FastMoneyConverter.class)
     private FastMoney value;
-    private Instant timestamp;
+    private Date timestamp;
 
     /*@PrePersist
     public void prePersist() {
@@ -62,5 +64,22 @@ public class Payment implements Identifiable<Long> {
     public void postLoad() {
         log.info("postLoad");
     }*/
+
+    @Override
+    public boolean equals(Object otherPayment) {
+        if (this == otherPayment) {
+            return true;
+        }
+        if (otherPayment == null || getClass() != otherPayment.getClass()) {
+            return false;
+        }
+        var payment = (PaymentEntity) otherPayment;
+        return Objects.equals(id, payment.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 13; //Objects.hash(getClass().getName());
+    }
 
 }
