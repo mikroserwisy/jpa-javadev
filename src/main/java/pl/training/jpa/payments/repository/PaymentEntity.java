@@ -1,8 +1,9 @@
-package pl.training.jpa;
+package pl.training.jpa.payments.repository;
 
 import lombok.*;
 import lombok.extern.java.Log;
 import org.javamoney.moneta.FastMoney;
+import pl.training.jpa.commons.Identifiable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Log
 @Builder
 //@EqualsAndHashCode(exclude = "id")
+@ToString
 @Getter
 @Setter
 @AllArgsConstructor
@@ -29,6 +31,7 @@ public class PaymentEntity implements Identifiable<Long> {
     //@Convert(converter = FastMoneyConverter.class)
     private FastMoney value;
     private Date timestamp;
+    private String status;
 
     /*@PrePersist
     public void prePersist() {

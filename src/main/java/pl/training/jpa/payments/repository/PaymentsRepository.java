@@ -1,4 +1,4 @@
-package pl.training.jpa;
+package pl.training.jpa.payments.repository;
 
 import java.util.Optional;
 

@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.training.jpa.commons.Identifiable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;

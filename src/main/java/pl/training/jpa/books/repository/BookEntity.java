@@ -1,8 +1,9 @@
-package pl.training.jpa;
+package pl.training.jpa.books.repository;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.training.jpa.commons.Identifiable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
