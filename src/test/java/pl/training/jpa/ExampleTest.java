@@ -1,5 +1,6 @@
 package pl.training.jpa;
 
+import lombok.Setter;
 import lombok.extern.java.Log;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.Session;
@@ -9,8 +10,10 @@ import pl.training.jpa.commons.LocalMoney;
 import pl.training.jpa.payments.repository.PaymentEntity;
 import pl.training.jpa.payments.repository.PropertyEntity;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -175,6 +178,11 @@ class ExampleTest extends BaseTest {
         });
         timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
         reporter.report();
+    }
+
+    @Test
+    void test() {
+        execute(List.of(new PaymentTask()));
     }
 
     private void preparePayments() {
