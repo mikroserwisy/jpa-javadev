@@ -31,7 +31,7 @@ public class PaymentEntity implements Identifiable<Long> {
     //@Convert(converter = FastMoneyConverter.class)
     private FastMoney value;
     private Date timestamp;
-    private String status;
+    private String state;
 
     /*@PrePersist
     public void prePersist() {
