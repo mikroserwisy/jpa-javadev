@@ -2,24 +2,25 @@ package pl.training.jpa.payments.service;
 
 import lombok.RequiredArgsConstructor;
 import org.javamoney.moneta.FastMoney;
-import pl.training.jpa.payments.repository.PaymentsRepository;
+import pl.training.jpa.payments.api.PaymentsRepository;
+import pl.training.jpa.payments.api.PaymentsService;
 
 import static pl.training.jpa.payments.service.PaymentStatus.NOT_CONFIRMED;
 
 @RequiredArgsConstructor
-public class PaymentsService {
+public class LocalPaymentsService implements PaymentsService {
 
     private final PaymentsRepository paymentsRepository;
     private final TimeProvider timeProvider;
-    private final PaymentsMapper mapper;
 
+    @Override
     public void process(FastMoney value) {
         var payment = Payment.builder()
                 .value(value)
                 .timestamp(timeProvider.getTimestamp())
                 .status(NOT_CONFIRMED)
                 .build();
-        paymentsRepository.save(mapper.toEntity(payment));
+        paymentsRepository.save(payment);
     }
 
 }

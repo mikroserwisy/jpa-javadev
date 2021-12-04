@@ -6,11 +6,10 @@ import pl.training.jpa.commons.TransactionTemplate;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class JpaPaymentsRepository implements PaymentsRepository {
+public class JpaPaymentsRepository {
 
     private final TransactionTemplate transactionTemplate;
 
-    @Override
     public PaymentEntity save(PaymentEntity payment) {
         return transactionTemplate.withTransaction(entityManager -> {
             entityManager.persist(payment);
@@ -18,7 +17,6 @@ public class JpaPaymentsRepository implements PaymentsRepository {
         });
     }
 
-    @Override
     public Optional<PaymentEntity> getById(Long id) {
         return transactionTemplate.withTransaction(entityManager -> Optional.ofNullable(entityManager.find(PaymentEntity.class, id)));
     }
