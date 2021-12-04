@@ -3,28 +3,25 @@ package pl.training.jpa;
 import lombok.extern.java.Log;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.Session;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.training.jpa.commons.LocalMoney;
 import pl.training.jpa.payments.repository.PaymentEntity;
 import pl.training.jpa.payments.repository.PropertyEntity;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static pl.training.jpa.TestFixture.createPayment;
 
 @Log
 class ExampleTest extends BaseTest {
 
-    private final PaymentEntity TEST_PAYMENT = PaymentEntity.builder()
-            .value(LocalMoney.of(1_000))
-            .timestamp(new Date())
-            .state("CONFIRMED")
-            .build();
+    private static final long SAMPLES = 10_000;
+
+    private final PaymentEntity TEST_PAYMENT = createPayment(1_000);
 
     @BeforeEach
     void beforeEach() {
@@ -112,6 +109,81 @@ class ExampleTest extends BaseTest {
             var payment = entityManager.find(PaymentEntity.class, TEST_PAYMENT.getId(), properties);
         });
         assertEquals(2, statistics.getEntityLoadCount());
+    }
+
+    @Test
+    void should_return_metrics_for_adding_payments_in_single_transaction() {
+        var timer = metricRegistry.timer(getClass().getName());
+        var startTime = System.nanoTime();
+        withTransaction(entityManager -> {
+            for (long sample = 1; sample <= SAMPLES; sample++) {
+                var payment = createPayment(1_000);
+                entityManager.persist(payment);
+            }
+        });
+        timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+        reporter.report();
+    }
+
+    @Test
+    void should_return_metrics_for_adding_payments_in_many_transactions() {
+        var timer = metricRegistry.timer(getClass().getName());
+        var startTime = System.nanoTime();
+        for (long sample = 1; sample <= SAMPLES; sample++) {
+            withTransaction(entityManager -> {
+                var payment = createPayment(1_000);
+                entityManager.persist(payment);
+            });
+        }
+        timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+        reporter.report();
+    }
+
+    @Test
+    void should_return_metrics_for_updating_payments_in_single_transaction() {
+        preparePayments();
+        var timer = metricRegistry.timer(getClass().getName());
+        var startTime = System.nanoTime();
+        withTransaction(entityManager -> {
+            var pageSize = 1_000;
+            for (int page = 1; page < (SAMPLES / pageSize); page++) {
+                entityManager.createQuery("select p from PaymentEntity p", PaymentEntity.class)
+                        .setFirstResult(page * pageSize)
+                        .setMaxResults(pageSize)
+                        .getResultList()
+                        .forEach(payment -> {
+                            payment.getValue().add(LocalMoney.of(500));
+                            entityManager.merge(payment);
+                            entityManager.flush();
+                        });
+                entityManager.clear();
+            }
+        });
+        timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+        reporter.report();
+    }
+
+    @Test
+    void should_return_metrics_for_updating_payments_in_single_update() {
+        preparePayments();
+        var timer = metricRegistry.timer(getClass().getName());
+        var startTime = System.nanoTime();
+        withTransaction(entityManager -> {
+            entityManager.createQuery("update PaymentEntity p set p.value = :value")
+                    .setParameter("value", LocalMoney.of(500))
+                    .executeUpdate();
+        });
+        timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+        reporter.report();
+    }
+
+    private void preparePayments() {
+        for (long sample = 1; sample <= SAMPLES; sample++) {
+            withTransaction(entityManager -> {
+                var payment = createPayment(1_000);
+                entityManager.persist(payment);
+            });
+        }
     }
 
 }
