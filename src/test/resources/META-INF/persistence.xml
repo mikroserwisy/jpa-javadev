@@ -4,6 +4,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <!--<mapping-file>META-INF/orm.xml</mapping-file>-->
         <class>pl.training.jpa.payments.repository.PaymentEntity</class>
+        <class>pl.training.jpa.payments.repository.PropertyEntity</class>
         <class>pl.training.jpa.books.repository.BookEntity</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/training"/>
@@ -12,6 +13,9 @@
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider"/>
+            <property name="hibernate.generate_statistics" value="true"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

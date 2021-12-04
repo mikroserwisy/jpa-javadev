@@ -3,14 +3,24 @@ package pl.training.jpa.payments.repository;
 import lombok.*;
 import lombok.extern.java.Log;
 import org.javamoney.moneta.FastMoney;
+import pl.training.jpa.commons.FastMoneyConverter;
 import pl.training.jpa.commons.Identifiable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.FetchType.LAZY;
+
+
+@NamedEntityGraph(name = PaymentEntity.WITH_PROPERTIES,
+        attributeNodes = {
+                @NamedAttributeNode("properties")
+        }
+)
+@NamedQuery(name = PaymentEntity.GET_ALL, query = "select p from PaymentEntity p join fetch p.properties pp")
 //@ExcludeDefaultListeners
 //@ExcludeSuperclassListeners
 //@EntityListeners(PaymentListener.class)
@@ -25,13 +35,19 @@ import java.util.Objects;
 @NoArgsConstructor
 public class PaymentEntity implements Identifiable<Long> {
 
+    public static final String GET_ALL = "paymentsGetAll";
+    public static final String WITH_PROPERTIES = "paymentsWithProperties";
+
     @GeneratedValue
     @Id
     private Long id;
-    //@Convert(converter = FastMoneyConverter.class)
+    @Convert(converter = FastMoneyConverter.class)
     private FastMoney value;
     private Date timestamp;
     private String state;
+    @JoinColumn(name = "PAYMENT_ID")
+    @OneToMany(cascade = PERSIST, fetch = LAZY)
+    private List<PropertyEntity> properties;
 
     /*@PrePersist
     public void prePersist() {
