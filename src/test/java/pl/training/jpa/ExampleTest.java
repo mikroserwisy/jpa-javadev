@@ -1,6 +1,5 @@
 package pl.training.jpa;
 
-import lombok.Setter;
 import lombok.extern.java.Log;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.Session;
@@ -10,14 +9,14 @@ import pl.training.jpa.commons.LocalMoney;
 import pl.training.jpa.payments.repository.PaymentEntity;
 import pl.training.jpa.payments.repository.PropertyEntity;
 
-import javax.persistence.EntityManager;
-import java.util.HashSet;
+import javax.persistence.LockModeType;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static javax.persistence.LockModeType.PESSIMISTIC_READ;
+import static javax.persistence.LockModeType.PESSIMISTIC_WRITE;
 import static org.junit.jupiter.api.Assertions.*;
 import static pl.training.jpa.TestFixture.createPayment;
 
@@ -188,7 +187,13 @@ class ExampleTest extends BaseTest {
 
     @Test
     void test() {
-        execute(List.of(new PaymentTask()));
+        var firstTask = new UpdatePaymentTask(TEST_PAYMENT.getId(), LocalMoney.of(100), 1, 10, PESSIMISTIC_WRITE);
+        var secondTask = new UpdatePaymentTask(TEST_PAYMENT.getId(), LocalMoney.of(200), 3, 5, PESSIMISTIC_READ);
+        execute(List.of(firstTask, secondTask));
+        withTransaction(entityManager -> {
+            var payment = entityManager.find(PaymentEntity.class, TEST_PAYMENT.getId());
+            log.info(payment.toString());
+        });
     }
 
     private void preparePayments() {

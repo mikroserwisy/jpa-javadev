@@ -7,6 +7,7 @@ import org.javamoney.moneta.FastMoney;
 import pl.training.jpa.payments.repository.PaymentEntity;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -22,23 +23,24 @@ public class UpdatePaymentTask implements TestTask {
     private final FastMoney newValue;
     private final int firstSleepTime;
     private final int secondSleepTime;
+    private final LockModeType lockModeType;
 
     @Override
     public void run() {
         var threadName = Thread.currentThread().getName();
-        log.info("#### " + threadName + " started");
+        System.out.println("#### " + threadName + " started");
         try {
             var tx = entityManager.getTransaction();
             tx.begin();
             TimeUnit.SECONDS.sleep(firstSleepTime);
-            log.info("#### " + threadName + " before load");
-            var payment = entityManager.find(PaymentEntity.class, paymentId);
-            log.info("#### " + threadName + " after load");
+            System.out.println("#### " + threadName + " before load");
+            var payment = entityManager.find(PaymentEntity.class, paymentId, lockModeType);
+            System.out.println("#### " + threadName + " after load");
             TimeUnit.SECONDS.sleep(secondSleepTime);
             payment.setValue(newValue);
-            log.info("#### " + threadName + " before commit");
+            System.out.println("#### " + threadName + " before commit");
             tx.commit();
-            log.info("#### " + threadName + " after commit");
+            System.out.println("#### " + threadName + " after commit");
         } catch (Exception exception) {
             exception.printStackTrace();
         } finally {

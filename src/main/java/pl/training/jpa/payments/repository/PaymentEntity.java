@@ -21,7 +21,7 @@ import static javax.persistence.FetchType.LAZY;
         }
 )
 @NamedQuery(name = PaymentEntity.GET_ALL, query = "select p from PaymentEntity p join fetch p.properties pp")
-//@ExcludeDefaultListeners
+@ExcludeDefaultListeners
 //@ExcludeSuperclassListeners
 //@EntityListeners(PaymentListener.class)
 @Entity
@@ -48,6 +48,8 @@ public class PaymentEntity implements Identifiable<Long> {
     @JoinColumn(name = "PAYMENT_ID")
     @OneToMany(cascade = PERSIST, fetch = LAZY)
     private List<PropertyEntity> properties;
+    @Version
+    private Long version;
 
     /*@PrePersist
     public void prePersist() {
