@@ -11,8 +11,10 @@ import pl.training.jpa.payments.repository.PaymentEntity;
 import pl.training.jpa.payments.repository.PropertyEntity;
 
 import javax.persistence.EntityManager;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -178,6 +180,10 @@ class ExampleTest extends BaseTest {
         });
         timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
         reporter.report();
+
+        var s = Set.of("java", "kotlin");
+
+        
     }
 
     @Test

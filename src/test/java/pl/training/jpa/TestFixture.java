@@ -1,6 +1,5 @@
 package pl.training.jpa;
 
-import org.javamoney.moneta.FastMoney;
 import pl.training.jpa.commons.LocalMoney;
 import pl.training.jpa.payments.repository.PaymentEntity;
 

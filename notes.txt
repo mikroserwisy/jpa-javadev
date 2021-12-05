@@ -1,1 +1,6 @@
-Dockerfile
+Stworzyć blog:
+
+- użyć czystej architektury
+- artykuły powinny mieć tytuł, treść, opis, tagi, komentarze, datę utworzenia, stan (draft, opublikowany), unikalny slug/url
+- artykuły mogą być grupowane kolekcje (nazwa, opis, lista artykułów)
+- artykuły można pobierać po url lub wszystkie ze stronicowaniem oraz dodawać, usuwać i edytować
